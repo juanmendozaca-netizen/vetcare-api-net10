@@ -1,0 +1,104 @@
+@VetCare_HostAddress = http://localhost:5099
+
+### Obtener todos los propietarios - 200
+GET {{VetCare_HostAddress}}/api/propietarios
+Accept: application/json
+
+### Obtener propietario existente - 200
+GET {{VetCare_HostAddress}}/api/propietarios/1
+Accept: application/json
+
+### Obtener propietario inexistente - 404
+GET {{VetCare_HostAddress}}/api/propietarios/9999
+Accept: application/json
+
+### Crear propietario - 201
+POST {{VetCare_HostAddress}}/api/propietarios
+Content-Type: application/json
+
+{
+  "nombres": "María",
+  "apellidos": "Prueba HTTP",
+  "telefono": "999888777",
+  "correo": "maria.prueba.http@correo.com"
+}
+
+### Crear propietario con datos inválidos - 400
+POST {{VetCare_HostAddress}}/api/propietarios
+Content-Type: application/json
+
+{
+  "nombres": "M",
+  "correo": "correo-invalido"
+}
+
+### Crear mascota - 201
+POST {{VetCare_HostAddress}}/api/mascotas
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "Max",
+  "especie": "Perro",
+  "raza": "Poodle",
+  "fechaNacimiento": "2023-02-10",
+  "peso": 7.5,
+  "numeroMicrochip": "MC-HTTP-001"
+}
+
+### Crear mascota con microchip repetido - 409
+POST {{VetCare_HostAddress}}/api/mascotas
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "Max Repetido",
+  "especie": "Perro",
+  "peso": 7.5,
+  "numeroMicrochip": "MC-100001"
+}
+
+### Filtrar mascotas - 200
+GET {{VetCare_HostAddress}}/api/mascotas?especie=Perro&nombre=Bo
+Accept: application/json
+
+### Ruta anidada: mascotas de un propietario - 200
+GET {{VetCare_HostAddress}}/api/propietarios/1/mascotas
+Accept: application/json
+
+### Actualizar mascota - 204
+PUT {{VetCare_HostAddress}}/api/mascotas/1
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "Bobby Actualizado",
+  "especie": "Perro",
+  "raza": "Beagle",
+  "fechaNacimiento": "2021-04-15",
+  "peso": 13.0,
+  "numeroMicrochip": "MC-100001"
+}
+
+### Actualizar mascota inexistente - 404
+PUT {{VetCare_HostAddress}}/api/mascotas/9999
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "No Existe",
+  "especie": "Perro",
+  "peso": 5.0,
+  "numeroMicrochip": "MC-NO-EXISTE"
+}
+
+### Eliminar mascota existente - 204
+DELETE {{VetCare_HostAddress}}/api/mascotas/1
+
+### Eliminar propietario con mascotas - 409
+DELETE {{VetCare_HostAddress}}/api/propietarios/2
+
+### Eliminar recurso inexistente - 404
+DELETE {{VetCare_HostAddress}}/api/mascotas/9999
+
+# Response
