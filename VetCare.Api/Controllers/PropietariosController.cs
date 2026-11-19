@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VetCare.Entidades.DTOs;
 using VetCare.Negocio;
@@ -6,6 +7,7 @@ using VetCare.Negocio.Interfaces;
 namespace VetCare.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public sealed class PropietariosController(IPropietarioService service) : ControllerBase
 {
@@ -23,6 +25,7 @@ public sealed class PropietariosController(IPropietarioService service) : Contro
     }
 
     [HttpPost]
+    [Authorize(Roles = "Recepcionista")]
     public async Task<ActionResult<PropietarioDto>> Create(
         PropietarioCrearDto dto,
         CancellationToken cancellationToken)
@@ -39,6 +42,7 @@ public sealed class PropietariosController(IPropietarioService service) : Contro
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Recepcionista")]
     public async Task<IActionResult> Update(
         int id,
         PropietarioActualizarDto dto,
@@ -57,6 +61,7 @@ public sealed class PropietariosController(IPropietarioService service) : Contro
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Recepcionista")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         try

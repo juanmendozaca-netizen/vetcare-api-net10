@@ -8,6 +8,7 @@ public static class DependencyInjection
     public static IServiceCollection AddNegocio(this IServiceCollection services)
     {
         services.AddAutoMapper(configuracion => configuracion.AddProfile<MappingProfile>());
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IPropietarioService, PropietarioService>();
         services.AddScoped<IMascotaService, MascotaService>();
         return services;
