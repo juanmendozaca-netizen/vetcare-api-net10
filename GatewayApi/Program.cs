@@ -1,4 +1,5 @@
 using System.Text;
+using GatewayApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
@@ -38,7 +39,9 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddOcelot(builder.Configuration);
+builder.Services
+    .AddOcelot(builder.Configuration)
+    .AddDelegatingHandler<AzureStoppedServiceHandler>(global: true);
 
 var app = builder.Build();
 
