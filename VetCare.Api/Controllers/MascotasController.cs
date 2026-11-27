@@ -11,6 +11,7 @@ namespace VetCare.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class MascotasController(IMascotaService service) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<MascotaDto>>> GetAll(
         [FromQuery] string? especie,
@@ -20,6 +21,7 @@ public sealed class MascotasController(IMascotaService service) : ControllerBase
         return Ok(await service.GetAllAsync(especie, nombre, cancellationToken));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<MascotaDto>> GetById(int id, CancellationToken cancellationToken)
     {
@@ -27,6 +29,7 @@ public sealed class MascotasController(IMascotaService service) : ControllerBase
         return mascota is null ? NotFound() : Ok(mascota);
     }
 
+    [AllowAnonymous]
     [HttpGet("/api/propietarios/{propietarioId:int}/mascotas")]
     public async Task<ActionResult<IReadOnlyList<MascotaDto>>> GetByPropietario(
         int propietarioId,

@@ -1,4 +1,22 @@
+# Carpetas de compilación y entorno IDE
 **/bin/
 **/obj/
 .vs/
-VetCare.Api/appsettings.Development.json
+.vscode/
+.idea/
+
+# Archivos de usuario y perfiles de publicación de Visual Studio / Azure
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+**/Properties/PublishProfiles/
+*.pubxml
+*.pubxml.user
+
+# Configuraciones locales, cadenas de conexión y secretos (NUNCA subir al repositorio)
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/secrets.json
+.env
+*.env

@@ -1,0 +1,212 @@
+@Gateway_HostAddress = http://localhost:5168
+@Veterinarios_DirectAddress = http://localhost:5170
+@Token_Recepcionista = REEMPLAZAR_CON_TOKEN_RECEPCIONISTA
+@Token_Veterinario = REEMPLAZAR_CON_TOKEN_VETERINARIO
+
+# ============================================================================
+# 1. AUTENTICACIÓN POR EL GATEWAY (Ruta a: /gateway/auth/{everything} - Público)
+# ============================================================================
+
+### 1.1 Registrar cuenta Recepcionista - 201 Created (o 409 Conflict si ya existe)
+POST {{Gateway_HostAddress}}/gateway/auth/registro
+Content-Type: application/json
+
+{
+  "correo": "recepcion@vetcare.com",
+  "clave": "Password123!"
+}
+
+### 1.2 Registrar cuenta Veterinario (luego ejecutar database/AsignarRolesUsuarios.sql) - 201 Created
+POST {{Gateway_HostAddress}}/gateway/auth/registro
+Content-Type: application/json
+
+{
+  "correo": "veterinario@vetcare.com",
+  "clave": "Password123!"
+}
+
+### 1.3 Login Recepcionista - 200 OK (copiar token a @Token_Recepcionista)
+POST {{Gateway_HostAddress}}/gateway/auth/login
+Content-Type: application/json
+
+{
+  "correo": "recepcion@vetcare.com",
+  "clave": "Password123!"
+}
+
+### 1.4 Login Veterinario - 200 OK (copiar token a @Token_Veterinario)
+POST {{Gateway_HostAddress}}/gateway/auth/login
+Content-Type: application/json
+
+{
+  "correo": "veterinario@vetcare.com",
+  "clave": "Password123!"
+}
+
+### 1.5 Login con credenciales inválidas - 401 Unauthorized
+POST {{Gateway_HostAddress}}/gateway/auth/login
+Content-Type: application/json
+
+{
+  "correo": "recepcion@vetcare.com",
+  "clave": "ClaveIncorrecta"
+}
+
+### 1.6 Consultar perfil autenticado por el Gateway - 200 OK
+GET {{Gateway_HostAddress}}/gateway/auth/perfil
+Authorization: Bearer {{Token_Recepcionista}}
+Accept: application/json
+
+# ============================================================================
+# 2. CONSULTAS GET PÚBLICAS POR EL GATEWAY (Ruta b: Sin Token)
+# ============================================================================
+
+### 2.1 Listar propietarios sin token - 200 OK
+GET {{Gateway_HostAddress}}/gateway/propietarios
+Accept: application/json
+
+### 2.2 Obtener propietario por ID existente sin token - 200 OK
+GET {{Gateway_HostAddress}}/gateway/propietarios/1
+Accept: application/json
+
+### 2.3 Obtener propietario inexistente - 404 Not Found
+GET {{Gateway_HostAddress}}/gateway/propietarios/9999
+Accept: application/json
+
+### 2.4 Listar mascotas con filtros sin token - 200 OK
+GET {{Gateway_HostAddress}}/gateway/mascotas?especie=Perro&nombre=Bo
+Accept: application/json
+
+### 2.5 Listar mascotas de un propietario sin token - 200 OK
+GET {{Gateway_HostAddress}}/gateway/propietarios/1/mascotas
+Accept: application/json
+
+# ============================================================================
+# 3. ESCRITURA EN MICROSERVICIO 1 POR EL GATEWAY (Ruta c: Exige Token y Rol)
+# ============================================================================
+
+### 3.1 Intentar crear propietario SIN token - 401 Unauthorized (bloqueado por Ocelot Gateway)
+POST {{Gateway_HostAddress}}/gateway/propietarios
+Content-Type: application/json
+
+{
+  "nombres": "Pedro",
+  "apellidos": "Sin Token",
+  "telefono": "999111222",
+  "correo": "pedro.sintoken@correo.com"
+}
+
+### 3.2 Crear propietario con token de Recepcionista - 201 Created
+POST {{Gateway_HostAddress}}/gateway/propietarios
+Authorization: Bearer {{Token_Recepcionista}}
+Content-Type: application/json
+
+{
+  "nombres": "María",
+  "apellidos": "Gómez Vargas",
+  "telefono": "999888777",
+  "correo": "maria.gomez@correo.com"
+}
+
+### 3.3 Intentar crear propietario con token de Veterinario - 403 Forbidden (rol no autorizado en API)
+POST {{Gateway_HostAddress}}/gateway/propietarios
+Authorization: Bearer {{Token_Veterinario}}
+Content-Type: application/json
+
+{
+  "nombres": "Intento",
+  "apellidos": "Rol Veterinario",
+  "telefono": "999000111",
+  "correo": "intento.vet@correo.com"
+}
+
+### 3.4 Crear mascota con token de Recepcionista - 201 Created
+POST {{Gateway_HostAddress}}/gateway/mascotas
+Authorization: Bearer {{Token_Recepcionista}}
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "Max",
+  "especie": "Perro",
+  "raza": "Poodle",
+  "fechaNacimiento": "2023-02-10",
+  "peso": 7.5,
+  "numeroMicrochip": "MC-GW-001"
+}
+
+### 3.5 Intentar actualizar mascota con token de Recepcionista - 403 Forbidden
+PUT {{Gateway_HostAddress}}/gateway/mascotas/1
+Authorization: Bearer {{Token_Recepcionista}}
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "Bobby Intento Recepcion",
+  "especie": "Perro",
+  "raza": "Beagle",
+  "fechaNacimiento": "2021-04-15",
+  "peso": 13.0,
+  "numeroMicrochip": "MC-100001"
+}
+
+### 3.6 Actualizar mascota con token de Veterinario - 204 No Content
+PUT {{Gateway_HostAddress}}/gateway/mascotas/1
+Authorization: Bearer {{Token_Veterinario}}
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "Bobby Control Veterinario",
+  "especie": "Perro",
+  "raza": "Beagle",
+  "fechaNacimiento": "2021-04-15",
+  "peso": 13.2,
+  "numeroMicrochip": "MC-100001"
+}
+
+### 3.7 Actualizar mascota inexistente con token de Veterinario - 404 Not Found
+PUT {{Gateway_HostAddress}}/gateway/mascotas/9999
+Authorization: Bearer {{Token_Veterinario}}
+Content-Type: application/json
+
+{
+  "propietarioId": 1,
+  "nombre": "Inexistente",
+  "especie": "Perro",
+  "peso": 5.0,
+  "numeroMicrochip": "MC-NO-9999"
+}
+
+### 3.8 Eliminar mascota con token de Veterinario - 204 No Content
+DELETE {{Gateway_HostAddress}}/gateway/mascotas/3
+Authorization: Bearer {{Token_Veterinario}}
+
+# ============================================================================
+# 4. MICROSERVICIO 2 (VETERINARIOS EN MEMORIA) POR EL GATEWAY (Ruta d: Exige Token)
+# ============================================================================
+
+### 4.1 Consultar veterinarios por el Gateway SIN token - 401 Unauthorized
+GET {{Gateway_HostAddress}}/gateway/veterinarios
+Accept: application/json
+
+### 4.2 Consultar lista de veterinarios por el Gateway CON token - 200 OK
+# (NOTA: Si detienes VetCare.VeterinariosApi y ejecutas esta petición, el Gateway responderá 502 Bad Gateway)
+GET {{Gateway_HostAddress}}/gateway/veterinarios
+Authorization: Bearer {{Token_Recepcionista}}
+Accept: application/json
+
+### 4.3 Consultar veterinario por ID existente (1) CON token - 200 OK
+GET {{Gateway_HostAddress}}/gateway/veterinarios/1
+Authorization: Bearer {{Token_Veterinario}}
+Accept: application/json
+
+### 4.4 Consultar veterinario por ID inexistente (9999) CON token - 404 Not Found
+GET {{Gateway_HostAddress}}/gateway/veterinarios/9999
+Authorization: Bearer {{Token_Veterinario}}
+Accept: application/json
+
+### 4.5 Llamada DIRECTA al Microservicio 2 (:5170) SIN token - 401 Unauthorized
+GET {{Veterinarios_DirectAddress}}/api/veterinarios
+Accept: application/json
+

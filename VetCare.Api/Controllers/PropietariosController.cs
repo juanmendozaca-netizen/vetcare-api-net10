@@ -11,12 +11,14 @@ namespace VetCare.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class PropietariosController(IPropietarioService service) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<PropietarioDto>>> GetAll(CancellationToken cancellationToken)
     {
         return Ok(await service.GetAllAsync(cancellationToken));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PropietarioDto>> GetById(int id, CancellationToken cancellationToken)
     {
