@@ -6,7 +6,12 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+var ocelotFile = builder.Environment.IsDevelopment()
+    && File.Exists(Path.Combine(builder.Environment.ContentRootPath, "ocelot.Development.json"))
+    ? "ocelot.Development.json"
+    : "ocelot.json";
+
+builder.Configuration.AddJsonFile(ocelotFile, optional: false, reloadOnChange: true);
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)

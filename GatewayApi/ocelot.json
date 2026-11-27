@@ -4,11 +4,11 @@
       "UpstreamPathTemplate": "/gateway/auth/{everything}",
       "UpstreamHttpMethod": [ "POST" ],
       "DownstreamPathTemplate": "/api/auth/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5169
+          "Host": "vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net",
+          "Port": 443
         }
       ]
     },
@@ -16,11 +16,11 @@
       "UpstreamPathTemplate": "/gateway/auth/perfil",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/auth/perfil",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5169
+          "Host": "vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net",
+          "Port": 443
         }
       ],
       "AuthenticationOptions": {
@@ -31,11 +31,11 @@
       "UpstreamPathTemplate": "/gateway/propietarios{everything}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/propietarios{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5169
+          "Host": "vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net",
+          "Port": 443
         }
       ]
     },
@@ -43,11 +43,11 @@
       "UpstreamPathTemplate": "/gateway/mascotas{everything}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/mascotas{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5169
+          "Host": "vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net",
+          "Port": 443
         }
       ]
     },
@@ -55,11 +55,11 @@
       "UpstreamPathTemplate": "/gateway/propietarios{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/propietarios{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5169
+          "Host": "vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net",
+          "Port": 443
         }
       ],
       "AuthenticationOptions": {
@@ -70,11 +70,11 @@
       "UpstreamPathTemplate": "/gateway/mascotas{everything}",
       "UpstreamHttpMethod": [ "POST", "PUT", "DELETE" ],
       "DownstreamPathTemplate": "/api/mascotas{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5169
+          "Host": "vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net",
+          "Port": 443
         }
       ],
       "AuthenticationOptions": {
@@ -85,11 +85,11 @@
       "UpstreamPathTemplate": "/gateway/veterinarios{everything}",
       "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/veterinarios{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5170
+          "Host": "vetcare-veterinarios-jc-dncpaxc2eqh4a5aw.westus3-01.azurewebsites.net",
+          "Port": 443
         }
       ],
       "AuthenticationOptions": {
@@ -98,6 +98,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:5168"
+    "BaseUrl": "https://vetcare-gateway-jc-esc9hcfeftgsfvey.westus3-01.azurewebsites.net"
   }
 }

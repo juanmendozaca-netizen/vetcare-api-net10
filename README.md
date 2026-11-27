@@ -61,17 +61,20 @@ Cliente (Postman / Gateway.http)
 
 ### 3.2 Entorno en la Nube (Microsoft Azure)
 
-*(Reemplazar los subdominios `.azurewebsites.net` por los nombres finales asignados en tu suscripción de Azure; la plantilla lista para producción se encuentra en `GatewayApi/ocelot.azure.json`)*.
-
 | Upstream (cliente → gateway HTTPS) | Método | Downstream (gateway → servicio HTTPS `:443`) | Token |
 |---|---|---|---|
-| `/gateway/auth/{everything}` | `POST` | `vetcare-api-s15.azurewebsites.net:443` `/api/auth/{everything}` | No |
-| `/gateway/auth/perfil` | `GET` | `vetcare-api-s15.azurewebsites.net:443` `/api/auth/perfil` | Sí |
-| `/gateway/propietarios{everything}` | `GET` | `vetcare-api-s15.azurewebsites.net:443` `/api/propietarios{everything}` | No |
-| `/gateway/mascotas{everything}` | `GET` | `vetcare-api-s15.azurewebsites.net:443` `/api/mascotas{everything}` | No |
-| `/gateway/propietarios{everything}` | `POST, PUT, DELETE` | `vetcare-api-s15.azurewebsites.net:443` `/api/propietarios{everything}` | Sí |
-| `/gateway/mascotas{everything}` | `POST, PUT, DELETE` | `vetcare-api-s15.azurewebsites.net:443` `/api/mascotas{everything}` | Sí |
-| `/gateway/veterinarios{everything}` | `GET` | `vetcare-veterinarios-s15.azurewebsites.net:443` `/api/veterinarios{everything}` | Sí |
+| `/gateway/auth/{everything}` | `POST` | `vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net:443` `/api/auth/{everything}` | No |
+| `/gateway/auth/perfil` | `GET` | `vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net:443` `/api/auth/perfil` | Sí |
+| `/gateway/propietarios{everything}` | `GET` | `vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net:443` `/api/propietarios{everything}` | No |
+| `/gateway/mascotas{everything}` | `GET` | `vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net:443` `/api/mascotas{everything}` | No |
+| `/gateway/propietarios{everything}` | `POST, PUT, DELETE` | `vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net:443` `/api/propietarios{everything}` | Sí |
+| `/gateway/mascotas{everything}` | `POST, PUT, DELETE` | `vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net:443` `/api/mascotas{everything}` | Sí |
+| `/gateway/veterinarios{everything}` | `GET` | `vetcare-veterinarios-jc-dncpaxc2eqh4a5aw.westus3-01.azurewebsites.net:443` `/api/veterinarios{everything}` | Sí |
+
+**Enlaces públicos publicados (Microsoft Azure — West US 3):**
+- **API Gateway (`GatewayApi`):** `https://vetcare-gateway-jc-esc9hcfeftgsfvey.westus3-01.azurewebsites.net`
+- **Microservicio 1 (`VetCare.Api`):** `https://vetcare-api-jc-gecuebajdzdpdvgb.westus3-01.azurewebsites.net`
+- **Microservicio 2 (`VetCare.VeterinariosApi`):** `https://vetcare-veterinarios-jc-dncpaxc2eqh4a5aw.westus3-01.azurewebsites.net`
 
 ---
 
@@ -134,11 +137,11 @@ Cliente (Postman / Gateway.http)
    - En **Networking / Firewall** del servidor SQL, activar *"Allow Azure services and resources to access this server"* y agregar tu IP actual del cliente.
    - Conectarse desde SSMS 2022 o el *Query Editor* de Azure Portal y ejecutar `database/VetCareDb.sql` y `database/Usuarios.sql`.
 2. **Publicar los 3 Proyectos en Azure App Service**:
-   - Crear 3 Web Apps (Plan **F1 Free** o Plan compartido):
-     1. `vetcare-api-s15` (Microservicio 1: `VetCare.Api`)
-     2. `vetcare-veterinarios-s15` (Microservicio 2: `VetCare.VeterinariosApi`)
-     3. `vetcare-gateway-s15` (API Gateway: `GatewayApi`)
-   - Antes de publicar `GatewayApi`, copiar el contenido de `GatewayApi/ocelot.azure.json` en `GatewayApi/ocelot.json` colocando los nombres exactos `.azurewebsites.net` de tus tres Web Apps (`DownstreamScheme: "https"`, `Port: 443`).
+   - Crear 3 Web Apps (Plan **F1 Free** compartido):
+     1. `vetcare-api-jc` (Microservicio 1: `VetCare.Api`)
+     2. `vetcare-veterinarios-jc` (Microservicio 2: `VetCare.VeterinariosApi`)
+     3. `vetcare-gateway-jc` (API Gateway: `GatewayApi`)
+   - En producción (Azure), `GatewayApi` carga automáticamente `GatewayApi/ocelot.json` con los hosts HTTPS (`Port: 443`) de cada servicio; en desarrollo local carga `GatewayApi/ocelot.Development.json`.
 3. **Configurar Secretos y Variables de Entorno en Azure Portal**:
    - En cada una de las **3 Web Apps** (`Configuración` -> `Variables de entorno` / `App Settings`), agregar:
      - `Jwt__Key` = `<tu-clave-secreta-de-minimo-32-caracteres>` (exactamente la misma en las 3 apps).
